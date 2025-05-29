@@ -8,3 +8,4 @@
 # Instale as dependências com o comando "npm intall"
 # Use "npm test" para iniciar
 # Depois de iniciar pela primeira vez, um erro aparece, finalize o programa e inicie novamente com "npm test" para funcionar
+# "localhost:3000" para ver o programa
