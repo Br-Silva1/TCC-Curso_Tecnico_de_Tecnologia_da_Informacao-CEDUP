@@ -1,0 +1,42 @@
+<nav>
+    <header>
+        <div class="interface navbar" id="navbar">
+            <div class="logo">
+                <a href="/">
+                    <br>
+                    <strong>
+                    <p>CLÍNICA PSICOLÓGICA KACIELY</p>
+                </strong>
+                </a>
+            </div><!--logo-->
+            <nav class="menu-desktop">
+                <br>
+                <ul>
+                    <strong>
+                        <% if (locals.session && locals.session.usuario && locals.session.usuario.permissao === true) { %>
+                            <li><a href="/controle-usuarios">USUARIOS</a></li>
+                            <li><a href="/controle-clientes">CLIENTES</a></li>
+                            <li><a href="/controle-imagens">IMAGENS</a></li>
+                            <li><a href="/controle-consultas">CONSULTAS</a></li>
+                            <li><a href="/controle-comentarios">COMENTARIOS</a></li>
+                            <li><a href="/controle-avaliacoes">AVALIAÇÕES</a></li>
+                            <li><a href="/logout">SAIR</a></li>
+                        <% } else { %>
+                            <li><a href="#contatos">FALE COM A GENTE</a></li>
+                            <li><a href="#sobre-mim">SOBRE MIM</a></li>
+                            <li><a href="#oqe">ORIENTAÇÃO</a></li>
+                            <li><a href="#vantagens">VANTAGENS</a></li>
+                            <li><a href="#agenda">AGENDA</a></li>
+                            <li><a href="#comentarios">FEEDBACKS</a></li>
+                            <% if (locals.session && locals.session.usuario) { %>
+                                <li><a href="/perfil">PERFIL</a></li>
+                            <% } else { %>
+                                <li><a href="/login">ENTRAR</a></li>
+                            <% } %>
+                        <% } %>
+                </strong>
+                </ul>
+            </nav>
+        </div><!--interface-->
+    </header>
+</nav>

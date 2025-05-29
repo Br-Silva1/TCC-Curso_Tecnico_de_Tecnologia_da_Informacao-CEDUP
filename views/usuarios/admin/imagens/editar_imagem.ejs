@@ -1,0 +1,30 @@
+<%- include("../../../partials/header.ejs") %>
+    <%- include("../../../partials/navbar.ejs") %>
+
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                        <div class="card-header">
+                            <h2 class="text-center">Editar Imagem</h2>
+                        </div>
+                        <div class="card-body" style="height: 250px; width: 500px;">
+                            <br>
+                            <form action="/editar-imagem/<%= imagens.id %>" method="POST">
+
+                                <div class="mb-3">
+                                    <label for="imagem" class="form-label">Imagem</label>
+                                    <input type="text" class="form-control" id="imagem" name="imagem"
+                                        value="<%= imagens.imagem %>">
+                                </div>
+                                <br>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Atualizar Imagem</button>
+                                </div>
+                            </form>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <br><br><br><br><br><br><br>
+
+        <%- include("../../../partials/footer.ejs") %>

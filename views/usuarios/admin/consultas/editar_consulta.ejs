@@ -1,0 +1,63 @@
+<%- include("../../../partials/header.ejs") %>
+    <%- include("../../../partials/navbar.ejs") %>
+
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                        <div class="card-header">
+                            <h2 class="text-center">Editar Consulta</h2>
+                        </div>
+                        <div class="card-body" style="height: 650px; width: 500px;">
+                            <br>
+                            <form action="/editar-consulta/<%= consulta.id %>" method="POST">
+                                <div class="mb-3">
+                                    <label for="data_consulta" class="form-label">Data Consulta</label>
+                                    <input type="text" class="form-control" id="data_consulta" name="data_consulta"
+                                        value="<%= consulta.data_consulta %>">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="horario_consulta" class="form-label">Horário Consulta</label>
+                                    <input type="text" class="form-control" id="horario_consulta" name="horario_consulta"
+                                        value="<%= consulta.horario_consulta %>">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="descricao" class="form-label">Descrição</label>
+                                    <textarea type="text" class="form-control" style="min-height: 200px; max-height: 200px;" id="descricao" name="descricao"><%= consulta.descricao %></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Status</label>
+                                    <select class="form-select" id="status" name="status">
+                                        <option value="Ativo" <%= consulta.status === 'Ativo' ? 'selected' : '' %>>ATIVO</option>
+                                        <option value="Cancelado" <%= consulta.status === 'Cancelado' ? 'selected' : '' %>>CANCELADO</option>
+                                        <option value="Realizado" <%= consulta.status === 'Realizado' ? 'selected' : '' %>>REALIZADO</option>
+                                    </select>
+                                </div>
+                                <br>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Atualizar Consulta</button>
+                                </div>
+                            </form>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <br><br><br><br><br><br><br>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.querySelector('form');
+
+                form.addEventListener('submit', function (event) {
+                    const data_consulta = document.getElementById('data_consulta').value.trim();
+                    const horario_consulta = document.getElementById('horario_consulta').value.trim();
+                    const status = document.getElementById('status').value.trim();
+
+                    if (!id_usuario || !data_consulta || !horario_consulta || !status ) {
+                        event.preventDefault();
+                        alert('Por favor, preencha todos os campos obrigatórios');
+                    }
+                });
+            });
+        </script>
+
+        <%- include("../../../partials/footer.ejs") %>

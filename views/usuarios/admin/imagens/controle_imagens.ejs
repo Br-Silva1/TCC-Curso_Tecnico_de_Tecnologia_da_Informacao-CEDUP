@@ -1,0 +1,118 @@
+<%- include("../../../partials/header.ejs") %>
+    <%- include("../../../partials/navbar.ejs") %>
+
+    <div class="container">
+        <div class="card-header">
+            <h2 class="text-center">Gerenciamento de Imagens</h2>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <input type="text" id="searchInput" class="form-control" style="height: 50px;" placeholder="Pesquisar imagens...">
+            </div>
+    
+            <div class="table-responsive" style="max-height: 590px; overflow-y: auto;">
+                <table class="table table-striped">
+                    <thead style="position: sticky; top: 0; background: white; z-index: 1;">
+                        <tr>
+                            <th>ID Imagem</th>
+                            <th>ID Cliente</th>
+                            <th>Nome Imagem</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <% imagens.forEach((img)=> { %>
+                            <tr>
+                                <td><%= img.id %></td>
+                                <td><%= img.id_cliente %></td>
+                                <td><%= img.imagem %></td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm edit-user" data-id="<%= img.id %>">Editar</button>
+                                    <button class="btn btn-danger btn-sm delete-user" data-id="<%= img.id %>">Deletar</button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br><br><br><br>    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const userTableBody = document.getElementById('userTableBody');
+        const rows = userTableBody.getElementsByTagName('tr');
+    
+        const smoothScroll = (element, target, duration) => {
+            const start = element.scrollTop;
+            const distance = target - start;
+            const startTime = performance.now();
+    
+            const animation = currentTime => {
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1);
+    
+                const easeInOutQuad = t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+                
+                element.scrollTop = start + distance * easeInOutQuad(progress);
+    
+                if (progress < 1) {
+                    requestAnimationFrame(animation);
+                }
+            };
+    
+            requestAnimationFrame(animation);
+        };
+    
+        const tableContainer = document.querySelector('.table-responsive');
+        tableContainer.addEventListener('wheel', function(e) {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                const scrollAmount = e.deltaY * 0.5;
+                smoothScroll(this, this.scrollTop + scrollAmount, 150);
+            }
+        }, { passive: false });
+    
+        searchInput.addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+    
+            for (let row of rows) {
+                const id = row.cells[0].textContent
+                const id_cliente = row.cells[1].textContent
+                const imagem = row.cells[2].textContent.toLowerCase();
+    
+                if (id.includes(searchTerm) || id_cliente.includes(searchTerm) || imagem.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    
+        document.querySelectorAll('.edit-user').forEach(button => {
+            button.addEventListener('click', function() {
+                const imgId = this.getAttribute('data-id');
+                window.location.href = `/editar-imagem/${imgId}`;
+            });
+        });
+    
+        document.querySelectorAll('.delete-user').forEach(button => {
+            button.addEventListener('click', function() {
+                const imgId = this.getAttribute('data-id');
+                if (confirm('Tem certeza que deseja deletar esta imagem?')) {
+                    fetch(`/deletar-imagem/${imgId}`, { method: 'DELETE' })
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.reload();
+                            } else {
+                                alert('Erro ao deletar imagem');
+                            }
+                        });
+                }
+            });
+        });
+    });
+    </script>
+
+        <%- include("../../../partials/footer.ejs") %>

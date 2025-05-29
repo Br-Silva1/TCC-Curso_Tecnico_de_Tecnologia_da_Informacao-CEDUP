@@ -1,0 +1,127 @@
+<%- include("../../../partials/header.ejs") %>
+    <%- include("../../../partials/navbar.ejs") %>
+
+    <div class="container">
+        <div class="card-header">
+            <h2 class="text-center">Gerenciamento de Comentários</h2>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <input type="text" id="searchInput" class="form-control" style="height: 50px;" placeholder="Pesquisar consultas...">
+            </div>
+    
+            <div class="table-responsive" style="max-height: 590px; overflow-y: auto;">
+                <table class="table table-striped">
+                    <thead style="position: sticky; top: 0; background: white; z-index: 1;">
+                        <tr>
+                            <th>ID Comentário</th>
+                            <th>ID Cliente</th>
+                            <th>Autor</th>
+                            <th>Comentário</th>
+                            <th>Upvotes</th>
+                            <th>Downvotes</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <% comentarios.forEach((coment)=> { %>
+                            <tr>
+                                <td><%= coment.id_comentario %></td>
+                                <td><%= coment.id_cliente %></td>
+                                <td><%= coment.autor %></td>
+                                <td><%= coment.comentario %></td>
+                                <td><%= coment.upvotes %></td>
+                                <td><%= coment.downvotes %></td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm edit-user" data-id="<%= coment.id_comentario %>">Editar</button>
+                                    <button class="btn btn-danger btn-sm delete-user" data-id="<%= coment.id_comentario %>">Deletar</button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br><br><br><br>    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const userTableBody = document.getElementById('userTableBody');
+        const rows = userTableBody.getElementsByTagName('tr');
+    
+        const smoothScroll = (element, target, duration) => {
+            const start = element.scrollTop;
+            const distance = target - start;
+            const startTime = performance.now();
+    
+            const animation = currentTime => {
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1);
+    
+                const easeInOutQuad = t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+                
+                element.scrollTop = start + distance * easeInOutQuad(progress);
+    
+                if (progress < 1) {
+                    requestAnimationFrame(animation);
+                }
+            };
+    
+            requestAnimationFrame(animation);
+        };
+    
+        const tableContainer = document.querySelector('.table-responsive');
+        tableContainer.addEventListener('wheel', function(e) {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                const scrollAmount = e.deltaY * 0.5;
+                smoothScroll(this, this.scrollTop + scrollAmount, 150);
+            }
+        }, { passive: false });
+    
+        searchInput.addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+    
+            for (let row of rows) {
+                const id_comentario = row.cells[0].textContent
+                const id_cliente = row.cells[1].textContent
+                const autor = row.cells[2].textContent.toLowerCase();
+                const comentario = row.cells[3].textContent.toLowerCase();
+                const upvotes = row.cells[4].textContent
+                const downvotes = row.cells[5].textContent
+    
+                if (id_comentario.includes(searchTerm) || id_cliente.includes(searchTerm) || autor.includes(searchTerm) || comentario.includes(searchTerm) || upvotes.includes(searchTerm) || downvotes.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    
+        document.querySelectorAll('.edit-user').forEach(button => {
+            button.addEventListener('click', function() {
+                const comentId = this.getAttribute('data-id');
+                window.location.href = `/editar-comentario/${comentId}`;
+            });
+        });
+    
+        document.querySelectorAll('.delete-user').forEach(button => {
+            button.addEventListener('click', function() {
+                const comentId = this.getAttribute('data-id');
+                if (confirm('Tem certeza que deseja deletar este comentario?')) {
+                    fetch(`/deletar-comentario/${comentId}`, { method: 'DELETE' })
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.reload();
+                            } else {
+                                alert('Erro ao deletar comentário');
+                            }
+                        });
+                }
+            });
+        });
+    });
+    </script>
+
+        <%- include("../../../partials/footer.ejs") %>

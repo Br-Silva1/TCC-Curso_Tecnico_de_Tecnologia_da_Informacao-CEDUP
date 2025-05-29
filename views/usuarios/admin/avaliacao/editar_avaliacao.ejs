@@ -1,0 +1,32 @@
+<%- include("../../../partials/header.ejs") %>
+    <%- include("../../../partials/navbar.ejs") %>
+
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                        <div class="card-header">
+                            <h2 class="text-center">Editar Avaliação</h2>
+                        </div>
+                        <div class="card-body" style="height: 250px; width: 500px;">
+                            <br>
+                            <form action="/editar-avaliacao/<%= avaliacao.id %>" method="POST">
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Tipo de Voto</label>
+                                    <select class="form-select" id="tipoVoto" name="tipoVoto">
+                                        <option value="upvote" <%= avaliacao.tipoVoto === 'upvote' ? 'selected' : '' %>>UPVOTE</option>
+                                        <option value="downvote" <%= avaliacao.tipoVoto === 'downvote' ? 'selected' : '' %>>DOWNVOTE</option>
+                                    </select>
+                                </div>
+                                <br>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Atualizar Avaliação</button>
+                                </div>
+                            </form>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <br><br><br><br><br><br><br>
+
+
+        <%- include("../../../partials/footer.ejs") %>

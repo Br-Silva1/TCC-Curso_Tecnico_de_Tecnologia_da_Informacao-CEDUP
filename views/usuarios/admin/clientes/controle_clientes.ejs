@@ -1,0 +1,132 @@
+<%- include("../../../partials/header.ejs") %>
+    <%- include("../../../partials/navbar.ejs") %>
+
+    <div class="container">
+        <div class="card-header">
+            <h2 class="text-center">Gerenciamento de Clientes</h2>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <input type="text" id="searchInput" class="form-control" style="height: 50px;" placeholder="Pesquisar clientes...">
+            </div>
+    
+            <div class="table-responsive" style="max-height: 590px; overflow-y: auto;">
+                <table class="table table-striped">
+                    <thead style="position: sticky; top: 0; background: white; z-index: 1;">
+                        <tr>
+                            <th>ID Cliente</th>
+                            <th>ID Usuario</th>
+                            <th>Número</th>
+                            <th>CPF</th>
+                            <th>RG</th>
+                            <th>Endereço</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <% clientes.forEach((cliente)=> { %>
+                            <tr>
+                                <td><%= cliente.id_cliente %></td>
+                                <td><%= cliente.id_usuario %></td>
+                                <td><%= cliente.numero %></td>
+                                <td><%= cliente.cpf %></td>
+                                <td><%= cliente.rg %></td>
+                                <td><%= cliente.endereco %></td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm edit-user" data-id="<%= cliente.id_cliente %>">Editar</button>
+                                    <button class="btn btn-danger btn-sm delete-user" data-id="<%= cliente.id_cliente %>">Deletar</button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br><br><br><br>    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const userTableBody = document.getElementById('userTableBody');
+        const rows = userTableBody.getElementsByTagName('tr');
+    
+        // Smooth scroll function
+        const smoothScroll = (element, target, duration) => {
+            const start = element.scrollTop;
+            const distance = target - start;
+            const startTime = performance.now();
+    
+            const animation = currentTime => {
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1);
+    
+                const easeInOutQuad = t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+                
+                element.scrollTop = start + distance * easeInOutQuad(progress);
+    
+                if (progress < 1) {
+                    requestAnimationFrame(animation);
+                }
+            };
+    
+            requestAnimationFrame(animation);
+        };
+    
+        // Add smooth scroll to table
+        const tableContainer = document.querySelector('.table-responsive');
+        tableContainer.addEventListener('wheel', function(e) {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                const scrollAmount = e.deltaY * 0.5;
+                smoothScroll(this, this.scrollTop + scrollAmount, 150);
+            }
+        }, { passive: false });
+    
+        // Search functionality
+        searchInput.addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+    
+            for (let row of rows) {
+                const id_cliente = row.cells[0].textContent;
+                const id_usuario = row.cells[1].textContent;
+                const numero = row.cells[2].textContent;
+                const cpf = row.cells[3].textContent;
+                const rg = row.cells[4].textContent;
+                const endereco = row.cells[5].textContent.toLowerCase();
+    
+                if (id_cliente.includes(searchTerm) || id_usuario.includes(searchTerm) || numero.includes(searchTerm) || cpf.includes(searchTerm) || rg.includes(searchTerm) || endereco.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    
+        // Edit user functionality
+        document.querySelectorAll('.edit-user').forEach(button => {
+            button.addEventListener('click', function() {
+                const clienteId = this.getAttribute('data-id');
+                window.location.href = `/editar-cliente/${clienteId}`;
+            });
+        });
+    
+        // Delete user functionality
+        document.querySelectorAll('.delete-user').forEach(button => {
+            button.addEventListener('click', function() {
+                const clienteId = this.getAttribute('data-id');
+                if (confirm('Tem certeza que deseja deletar este cliente?')) {
+                    fetch(`/deletar-cliente/${clienteId}`, { method: 'DELETE' })
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.reload();
+                            } else {
+                                alert('Erro ao deletar cliente');
+                            }
+                        });
+                }
+            });
+        });
+    });
+    </script>
+
+        <%- include("../../../partials/footer.ejs") %>

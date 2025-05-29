@@ -1,0 +1,66 @@
+<%- include("../../../partials/header.ejs") %>
+    <%- include("../../../partials/navbar.ejs") %>
+
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                        <div class="card-header">
+                            <h2 class="text-center">Editar Usuário</h2>
+                        </div>
+                        <div class="card-body" style="height: 500px; width: 500px;">
+                            <br>
+                            <form action="/editar-usuario/<%= usuario.id_usuario %>" method="POST">
+                                <div class="mb-3">
+                                    <label for="nome" class="form-label">Nome</label>
+                                    <input type="text" class="form-control" id="nome" name="nome"
+                                        value="<%= usuario.nome %>" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        value="<%= usuario.email %>" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="permissao" class="form-label">Nível de Permissão</label>
+                                    <select class="form-select" id="permissao" name="permissao">
+                                        <option value="false" <%=usuario.permissao ? '' : 'selected' %>>
+                                            Usuário Padrão
+                                        </option>
+                                        <option value="true" <%=usuario.permissao ? 'selected' : '' %>>
+                                            Administrador
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="senha" class="form-label">Nova Senha (opcional)</label>
+                                    <input type="password" class="form-control" id="senha" name="senha"
+                                        placeholder="Deixe em branco se não quiser alterar">
+                                </div>
+                                <br>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Atualizar Usuário</button>
+                                </div>
+                            </form>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <br><br><br><br><br>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.querySelector('form');
+
+                form.addEventListener('submit', function (event) {
+                    const nome = document.getElementById('nome').value.trim();
+                    const email = document.getElementById('email').value.trim();
+
+                    if (!nome || !email) {
+                        event.preventDefault();
+                        alert('Por favor, preencha todos os campos obrigatórios');
+                    }
+                });
+            });
+        </script>
+
+        <%- include("../../../partials/footer.ejs") %>

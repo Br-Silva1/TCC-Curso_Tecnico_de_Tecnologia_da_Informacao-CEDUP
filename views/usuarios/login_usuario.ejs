@@ -1,0 +1,28 @@
+<%- include("../partials/header.ejs") %>
+    <%- include("../partials/navbar.ejs") %>
+        <div class="card-header">
+            <h2 style="text-align: center;">Login</h2>
+        </div>
+            <div class="container-login">
+                    <br><br>
+                    <div class="card-body">
+                        <div class="login-usuario">
+                        <form class="form-login" method="post" action="/logar-usuario">
+                            E-mail: <input class="form-text" type="email" name="email" placeholder="Digite o seu e-mail" required>
+                            <br>
+                            Senha: <input class="form-text" type="password" name="senha" placeholder="Digite sua senha" required>
+                            <br>
+                            <a href="/" class="btn button cancel-log" style="background-color: #EE0000;">Cancelar</a>
+                            <button class="btn button cancel-log" style="background-color: #FF9900;">Entrar</button>
+                            <br>
+                            Não possui uma conta? <a href="/cadastro">Cadastre-se</a>
+                        </form>
+                    </div>
+                    <div class="imagem-login">
+                        <img src="/img/logo.png" alt="">
+                    </div>
+                    </div>
+            </div>
+            <br><br><br>
+
+        <%- include("../partials/footer.ejs") %>

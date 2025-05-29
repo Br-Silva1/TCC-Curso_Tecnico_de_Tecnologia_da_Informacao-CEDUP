@@ -1,0 +1,61 @@
+<%- include("../../../partials/header.ejs") %>
+    <%- include("../../../partials/navbar.ejs") %>
+
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                        <div class="card-header">
+                            <h2 class="text-center">Editar Comentário</h2>
+                        </div>
+                        <div class="card-body" style="height: 650px; width: 500px;">
+                            <br>
+                            <form action="/editar-consulta/<%= comentario.id_comentario %>" method="POST">
+                                <div class="mb-3">
+                                    <label for="autor" class="form-label">Autor</label>
+                                    <input type="text" class="form-control" id="autor" name="autor"
+                                        value="<%= comentario.autor %>">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="cometario" class="form-label">Comentário</label>
+                                    <textarea type="text" class="form-control" style="min-height: 200px; max-height: 200px;" id="cometario" name="comentario"><%= comentario.comentario %></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="upvotes" class="form-label">Upvotes</label>
+                                    <input type="text" class="form-control" id="upvotes" name="upvotes"
+                                        value="<%= comentario.upvotes %>">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="downvotes" class="form-label">Downvotes</label>
+                                    <input type="text" class="form-control" id="downvotes" name="downvotes"
+                                        value="<%= comentario.downvotes %>">
+                                </div>
+                                <br>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Atualizar Comentário</button>
+                                </div>
+                            </form>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <br><br><br><br><br><br><br>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.querySelector('form');
+
+                form.addEventListener('submit', function (event) {
+                    const autor = document.getElementById('autor').value.trim();
+                    const comentario = document.getElementById('comentario').value.trim();
+                    const upvotes = document.getElementById('upvotes').value.trim();
+                    const downvotes = document.getElementById('downbotes').value.trim()
+
+                    if (!autor || !comentario || !upvotes || !downvotes ) {
+                        event.preventDefault();
+                        alert('Por favor, preencha todos os campos obrigatórios');
+                    }
+                });
+            });
+        </script>
+
+        <%- include("../../../partials/footer.ejs") %>

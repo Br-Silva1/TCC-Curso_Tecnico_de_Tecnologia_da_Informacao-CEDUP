@@ -1,0 +1,330 @@
+<%- include("../partials/header.ejs") %>
+    <%- include("../partials/navbarPerfil.ejs") %>
+
+        <div class="card-header">
+            <h2 style="text-align: center;">Perfil</h2>
+        </div>
+        <div class="container-login">
+            <div class="card-body card-perfil" style="height: 90vh;">
+                <div class="login-usuario">
+                    <form method="post" action="/editar-imagem" style="margin-left: 100px;" enctype="multipart/form-data">
+                        <div class="img-lapis" onclick="alterarImagem()">
+                            <img src="<%= imagens.imagem ? 'img/' + imagens.imagem : 'img/perfil.png' %>" class="perfil-img" name="imagem" id="imagem">
+                            <div class="lapis">
+                                <i class="fas fa-pencil-alt lapis-icon"></i>
+                            </div>
+                        </div>
+                        <div class="tela-blur" name="tela-blur-imagem" id="tela-blur-imagem">
+                            <div class="cards card tela-senha" name="tela-imagem" id="tela-imagem" style="height: 500px;">
+                                <h1>Alterar imagem</h1>
+                                <img src="<%= imagens.imagem ? 'img/' + imagens.imagem : 'img/perfil.png' %>" class="perfil-img img-alt" name="imagem-alt" id="imagem-alt">
+                                <br>
+                                <a href="/remover-imagem">Remover Imagem</a>
+                                <br>
+                                <input type="file" accept="image/png, image/jpeg" name="imagem_alt" id="imagem_alt" onchange="verificarDimensaoImagem(this)">
+                                <br>
+                                <div>
+                                    <a class="btn button cancelar-senha" style="background-color: #EE0000;" onclick="cancelarImg()">Voltar</a>
+                                    <button class="btn button confirmar-senha" style="background-color: #FF9900;">Confirmar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <form class="form-perfil" method="post" action="/editar" style="margin-left: 770px;">
+                        Nome: <input class="form-text" type="text" name="nome" id="nome"
+                            value="<%= session.usuario.nome %>" disabled>
+                        <br>
+                        E-mail: <input class="form-text" type="email" name="email" id="email"
+                            value="<%= session.usuario.email %>" disabled>
+                        <br>
+                        Telefone: <input class="form-text" type="text" name="numero" id="numero"
+                            value="<%= cliente ? cliente.numero || '' : '' %>" disabled>
+                        <br>
+                        CPF: <input class="form-text" type="text" name="cpf" id="cpf"
+                            value="<%= cliente ? cliente.cpf || '' : '' %>" disabled>
+                        <br>
+                        RG: <input class="form-text" type="text" name="rg" id="rg"
+                            value="<%= cliente ? cliente.rg || '' : '' %>" disabled>
+                        <br>
+                        Endereço: <input class="form-text" type="text" name="endereco" id="endereco"
+                            value="<%= cliente ? cliente.endereco || '' : '' %>" disabled>
+                        <a class="btn button cancel-log" style="background-color: #FF9900;" onclick="ativarEdicao()" id="editar">Editar</a>
+                        <br><br>
+                        <a href="/logout" class="btn button sair-btn" style="background-color: #EE0000;">Sair da conta</a>
+
+                        <div class="botoes-sair-voltar" id="voltar-salvar" style="margin-top: -60px;">
+                            <a class="btn button sair-btn voltar-btn" style="background-color: #EE0000;" onclick="cancelarEdição()">Cancelar</a>
+                            <a class="btn button cancel-log salvar-btn" style="background-color: #FF9900;"
+                                onclick="confirmarCPF()">Salvar</a>
+                        </div>
+                        <div class="tela-blur" name="tela-blur-senha" id="tela-blur-senha">
+                            <div class="cards card tela-senha" name="tela-senha" id="tela-senha" style="height: 450px;">
+                                <h1>Confirmar senha</h1>
+                                <br><br>
+                                Senha: <input type="password" name="senha" id="senha">
+                                <br><br>
+                                Confirmar senha: <input type="password" name="confirmar" id="confirmar">
+                                <br>
+                                <div id="mensagem-erro" style="display:none;"></div>
+                                <br>
+                                <div>
+                                    <a class="btn button cancelar-senha" style="background-color: #EE0000;"
+                                        onclick="voltarConfirmacaoEditarPerfil()">Voltar</a>
+                                    <button class="btn button confirmar-senha" style="background-color: #FF9900;"
+                                        onclick="confirmarSenha('mensagem-erro', 'senha', 'confirmar')">Confirmar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <br><br><br>
+        <script>
+            let nome_valor = document.getElementById('nome').value;
+            let email_valor = document.getElementById('email').value;
+            let numero_valor = document.getElementById('numero').value;
+            let cpf_valor = document.getElementById('cpf').value;
+            let rg_valor = document.getElementById('rg').value;
+            let endereco_valor = document.getElementById('endereco').value;
+
+            let editar = document.getElementById('editar');
+            let voltar_salvar = document.getElementById('voltar-salvar');
+            let tela_blur_imagem = document.getElementById('tela-blur-imagem');
+            let body = document.getElementById('body');
+            let tela_imagem = document.getElementById('tela-imagem');
+
+            function validaCPF(cpf) {
+                var Soma = 0;
+                var Resto;
+
+                var strCPF = String(cpf).replace(/\D/g, '');
+
+                if (strCPF.length !== 11)
+                    return false;
+
+                if ([
+                    '00000000000',
+                    '11111111111',
+                    '22222222222',
+                    '33333333333',
+                    '44444444444',
+                    '55555555555',
+                    '66666666666',
+                    '77777777777',
+                    '88888888888',
+                    '99999999999',
+                ].indexOf(strCPF) !== -1)
+                    return false;
+
+                for (let i = 1; i <= 9; i++)
+                    Soma = Soma + parseInt(strCPF.substring(i - 1, i)) * (11 - i);
+
+                Resto = (Soma * 10) % 11;
+
+                if ((Resto == 10) || (Resto == 11))
+                    Resto = 0;
+
+                if (Resto != parseInt(strCPF.substring(9, 10)))
+                    return false;
+
+                Soma = 0;
+
+                for (let i = 1; i <= 10; i++)
+                    Soma = Soma + parseInt(strCPF.substring(i - 1, i)) * (12 - i);
+
+                Resto = (Soma * 10) % 11;
+
+                if ((Resto == 10) || (Resto == 11))
+                    Resto = 0;
+
+                if (Resto != parseInt(strCPF.substring(10, 11)))
+                    return false;
+
+                return true;
+            }
+
+            function ativarEdicao() {
+                let nome = document.getElementById('nome');
+                let email = document.getElementById('email');
+                let numero = document.getElementById('numero');
+                let cpf = document.getElementById('cpf');
+                let rg = document.getElementById('rg');
+                let endereco = document.getElementById('endereco')
+
+                nome.disabled = false;
+                email.disabled = false;
+                numero.disabled = false;
+                cpf.disabled = false;
+                rg.disabled = false;
+                endereco.disabled = false;
+                editar.classList.add('desativar');
+                voltar_salvar.classList.add('ativar');
+            }
+
+            function cancelarEdição() {
+                let nome = document.getElementById('nome');
+                let email = document.getElementById('email');
+                let numero = document.getElementById('numero');
+                let cpf = document.getElementById('cpf');
+                let rg = document.getElementById('rg');
+                let endereco = document.getElementById('endereco')
+
+                nome.disabled = true;
+                email.disabled = true;
+                numero.disabled = true;
+                cpf.disabled = true;
+                rg.disabled = true;
+                endereco.disabled = true;
+                nome.value = nome_valor;
+                email.value = email_valor;
+                numero.value = numero_valor;
+                cpf.value = cpf_valor;
+                rg.value = rg_valor;
+                endereco.value = endereco_valor;
+                editar.classList.remove('desativar');
+                voltar_salvar.classList.remove('ativar');
+            }
+
+            $(document).ready(function () {
+                var mascara = function (valor) {
+                    var valorLimpo = valor.replace(/\D/g, '');
+
+                    return valorLimpo.length > 9 ? '000.000.000-00' : '00.000.000-000';
+                };
+
+                var opcoes = {
+                    onKeyPress: function (val, e, field, options) {
+                        field.mask(mascara.apply({}, arguments), options);
+                        var limpo = val.replace(/\D/g, '');
+                        if (limpo.length > 11) {
+                            field.val(field.val().slice(0, -1));
+                        }
+                    },
+                };
+
+                $('#numero').mask('+55 (00) 00000-0000');
+                $('#cpf').mask('000.000.000-00');
+                $('#rg').mask(mascara, opcoes);
+            });
+
+            function confirmarCPF() {
+                let cpf = document.getElementById('cpf').value;
+                let rg = document.getElementById('rg').value;
+                let cpfVal;
+                let rgVal = true;
+
+                if (!validaCPF(cpf)) {
+                    alert("Digite um CPF válido!");
+                    cpfVal = false;
+                } else {
+                    cpfVal = true;
+                }
+
+                if (rg.length != 12) {
+                    if (!validaCPF(rg)) {
+                        alert("Digite um RG válido!");
+                        rgVal = false;
+                    } else {
+                        rgVal = true;
+                    }
+                }
+
+                if (cpfVal == true && rgVal == true) {
+                    abrirConfirmaçãoEditarPerfil();
+                }
+            }
+
+            function abrirConfirmaçãoEditarPerfil() {
+                let tela_senha = document.getElementById('tela-senha');
+                let tela_blur_senha = document.getElementById('tela-blur-senha');
+
+                tela_senha.classList.add('mostrar');
+                tela_blur_senha.classList.add('mostrar');
+                body.classList.add('travar');
+            }
+
+            function voltarConfirmacaoEditarPerfil() {
+                let tela_senha = document.getElementById('tela-senha');
+                let tela_blur_senha = document.getElementById('tela-blur-senha');
+                let senha = document.getElementById('senha');
+                let confirmar = document.getElementById('confirmar');
+                let mensagem_erro = document.getElementById('mensagem-erro');
+
+                senha.value = "";
+                confirmar.value = "";
+                mensagem_erro.innerHTML = "";
+                mensagem_erro.style.display = 'none';
+
+
+                tela_senha.classList.remove('mostrar');
+                tela_blur_senha.classList.remove('mostrar');
+                body.classList.remove('travar');
+            }
+
+            function confirmarSenha(idMensagem_erro, idSenha, idConfirmar) {
+                let senha = document.getElementById(idSenha).value;
+                let confirmar = document.getElementById(idConfirmar).value;
+                let mensagem_erro = document.getElementById(idMensagem_erro);
+
+                if (senha != confirmar) {
+                    mensagem_erro.innerHTML = "<p style='color:red'>As senhas não conferem!</p>";
+                    mensagem_erro.style.display = 'block';
+                    event.preventDefault();
+                } else if (senha == "" || confirmar == "") {
+                    mensagem_erro.innerHTML = "<p style='color:red'>Os campos não podem ficar vazios!</p>";
+                    mensagem_erro.style.display = 'block';
+                    event.preventDefault();
+
+                } else {
+                    mensagem_erro.style.display = 'none';
+                }
+            }
+
+            function alterarImagem() {
+                tela_imagem.classList.add('mostrar');
+                tela_blur_imagem.classList.add('mostrar');
+                body.classList.add('travar');
+            }
+
+            function cancelarImg() {
+                let imagem = document.getElementById('imagem');
+
+                imagem.value = "";
+
+                tela_imagem.classList.remove('mostrar');
+                tela_blur_imagem.classList.remove('mostrar');
+                body.classList.remove('travar');
+            }
+
+            function verificarDimensaoImagem(input) {
+                const arquivo = input.files[0];
+                const tamanhoMinimoLargura = 300;
+                const tamanhoMinimoAltura = 300;
+
+                const ler = new FileReader();
+                
+                ler.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const largura = img.width;
+                        const altura = img.height;
+
+                        if (largura < tamanhoMinimoLargura || altura < tamanhoMinimoAltura) {
+                            alert(`A imagem precisa ter pelo menos ${tamanhoMinimoLargura}px de largura e ${tamanhoMinimoAltura}px de altura.`);
+                            input.value = '';
+                        }
+                    };
+                    img.src = e.target.result;
+                };
+                
+                if (arquivo) {
+                    ler.readAsDataURL(arquivo);
+                }
+            }
+
+        </script>
+
+        <%- include("../partials/footer.ejs") %>

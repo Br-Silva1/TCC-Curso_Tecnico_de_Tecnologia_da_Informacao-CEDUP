@@ -1,0 +1,80 @@
+<button id="scrollToTopBtn" onclick="gambiarra(event)">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 2L2 12h5v8h10v-8h5z"/>
+    </svg>
+</button>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let lastScrollY = window.scrollY;
+    let navbar = document.getElementById("navbar");
+    let isHidden = false;
+
+    window.addEventListener('scroll', function() {
+        const currentScrollY = window.scrollY;
+        
+        if (currentScrollY > lastScrollY && currentScrollY > 100 && !isHidden) {
+            navbar.classList.add("hidden");
+            isHidden = true;
+        } else if (currentScrollY < lastScrollY && isHidden) {
+            navbar.classList.remove("hidden");
+            isHidden = false;
+        }
+        
+        lastScrollY = currentScrollY;
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollToTopBtn.style.display = 'block';
+                } else {
+                    scrollToTopBtn.style.display = 'none';
+                }
+            });
+
+            scrollToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+function gambiarra(event){
+    event.preventDefault();
+}
+</script>
+</body>
+
+<main></main>
+<footer>
+    <div class="footer-container">
+        <div class="footer-content">
+            <h3>CLÍNICA PSICOLÓGICA KACIELY</h3>
+            <p>A Clínica Psicológica Kaciely oferece atendimento especializado e acolhedor para promover sua saúde mental e bem-estar. 
+               Nossos psicólogos qualificados estão aqui para apoiar você com empatia e ética, ajudando a enfrentar desafios emocionais 
+               e a desenvolver estratégias para uma vida mais equilibrada. Confidencialidade e profissionalismo são a base do nosso trabalho.</p>
+            
+            <div class="footer-icons">
+                <a href="https://www.linkedin.com/in/kaciely-da-silva-martins-b778722b6/" target="_blank"><img src="/img/linkedin.svg" alt="LinkedIn"></a>
+                <a href="https://api.whatsapp.com/message/SVOA6DLIBH3JG1?autoload=1&app_absent=0" target="_blank"><img src="/img/whatsapp.svg" alt="WhatsApp"></a>
+                <a href="https://www.instagram.com/eukacielypsi/" target="_blank"><img src="/img/instagram.png" alt="Instagram"></a>
+            </div>
+        </div>
+
+        <div class="footer-contacts">
+            <p>
+                <span class="phone-icon">📞</span> +55 (48) 99931-4992
+            </p>
+            <p>
+                <span class="email-icon">✉</span> kacielymartins@unesc.net
+            </p>
+        </div>
+    </div>
+</footer>
+</html>
